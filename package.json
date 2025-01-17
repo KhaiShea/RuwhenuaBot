@@ -1,0 +1,44 @@
+{
+  "private": true,
+  "name": "ruwhenua-bot",
+  "version": "1.0.0",
+  "description": "Rūwhenua Bot is a Discord bot that provides real-time earthquake updates for Aotearoa (New Zealand) using data from GeoNet.",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KhaiShea/RuwhenuaBot.git"
+  },
+  "keywords": [
+    "earthquake",
+    "aotearoa",
+    "new",
+    "zealand",
+    "geonet",
+    "discord",
+    "bot",
+    "discord",
+    "bot",
+    "shake"
+  ],
+  "author": "Khai Dye-Brinkman <me@khaishea.com> https://khaishea.com",
+  "contributors": [
+    "Carolina Mitchell <me@carolinamitchell.nz> https://carolinamitchell.nz"
+  ],
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/KhaiShea/RuwhenuaBot/issues"
+  },
+  "homepage": "https://github.com/KhaiShea/RuwhenuaBot#readme",
+  "packageManager": "pnpm@10.0.0-beta.0+sha512.5935e74d6e69a7500c443e7e4f6b7378b7612f0b6dfe7c5cb785d5be4bbe0f7f8a301d5eeb68c4aa7c7d04f95126eef539011e93991a88aba0cb8f6f07fc951d",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "discord.js": "^14.17.3"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
