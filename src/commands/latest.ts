@@ -38,27 +38,28 @@ export default class LatestEarthquakeCommand implements Command {
         await axios.get(apiUrl, {
             headers: { Accept: "application/vnd.geo+json;version=2" },
         }).then(async (res) => {
-            if (res.data.features && res.data.features.length > 0) {
-                const quake = res.data.features[0].properties;
-                const quakeTime = new Date(quake.time).toLocaleString("en-NZ", {
-                    timeZone: "Pacific/Auckland",
-                    dateStyle: "long",
-                    timeStyle: "short",
-                });
+            // Returns reply stating that no earthquakes over 3 MMI have been recorded recently if that is the case
+            if (res.data.features && res.data.features.length > 0) return await interaction.editReply({
+                content: "No earthquakes over 3 MMI have been recorded recently.",
+            });
 
-                await interaction.editReply({
-                    content: `**Last Earthquake Over 3 MMI**\n\n` +
-                        `**Time:** ${quakeTime}\n` +
-                        `**Magnitude:** ${quake.magnitude}\n` +
-                        `**Locality:** ${quake.locality}\n` +
-                        `**MMI:** ${quake.mmi}\n`,
-                });
-            } else {
-                await interaction.editReply({
-                    content: "No earthquakes over 3 MMI have been recorded recently.",
-                });
-            }
+            // Continues if there have been earthquakes over 3 MMI and sends the most recent one
+            const quake = res.data.features[0].properties;
+            const quakeTime = new Date(quake.time).toLocaleString("en-NZ", {
+                timeZone: "Pacific/Auckland",
+                dateStyle: "long",
+                timeStyle: "short",
+            });
+
+            await interaction.editReply({
+                content: `**Last Earthquake Over 3 MMI**\n\n` +
+                    `**Time:** ${quakeTime}\n` +
+                    `**Magnitude:** ${quake.magnitude}\n` +
+                    `**Locality:** ${quake.locality}\n` +
+                    `**MMI:** ${quake.mmi}\n`,
+            });
         }).catch(async (err) => {
+            // Logs any error querying the GeoNet API and replies to the user stating that there is an error
             console.error("Error fetchiing earthquake data:", err);
             await interaction.editReply({
                 content: "An error occurred while fetching earthquake data. Please try again later.",
