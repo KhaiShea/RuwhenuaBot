@@ -15,22 +15,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import Discord from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import axios from "axios";
 import { Command } from "../../@types";
 
 export default class LatestEarthquakeCommand implements Command {
     name = "latest";
     description = "Get the latest earthquake from GeoNet";
-    slashCommand = new Discord.SlashCommandBuilder()
+    slashCommand = new SlashCommandBuilder()
         .setName(this.name)
         .setDescription(this.description);
 
     /*
         Execute is called when the interaction is used on Discord.
-        Provides an emphemeral response linking user to the Aroha terms of use.
     */
-    async execute(interaction: Discord.ChatInputCommandInteraction): Promise<any> {
+    async execute(interaction: ChatInputCommandInteraction): Promise<any> {
         // Defer the reply to allow time for the API call
         await interaction.deferReply();
 
