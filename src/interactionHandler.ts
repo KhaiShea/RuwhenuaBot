@@ -17,13 +17,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { ChatInputCommandInteraction } from "discord.js";
 import { Command } from "../@types";
+import LatestEarthquakeCommand from "./commands/latest";
 
 export default class InteractionHandler {
     private commands: Command[]
 
     constructor() {
         this.commands = [
-
+            new LatestEarthquakeCommand(),
         ];
     }
 
