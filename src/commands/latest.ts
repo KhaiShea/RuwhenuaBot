@@ -35,15 +35,11 @@ export default class LatestEarthquakeCommand implements Command {
 
         const apiUrl = "https://api.geonet.org.nz/quake?MMI=3";
 
-        try {
-            const response = await axios.get(apiUrl, {
-                headers: { Accept: "application/vnd.geo+json;version=2" },
-            });
-
-            const data = response.data;
-
-            if (data.features && data.features.length > 0) {
-                const quake = data.features[0].properties;
+        await axios.get(apiUrl, {
+            headers: { Accept: "application/vnd.geo+json;version=2" },
+        }).then(async (res) => {
+            if (res.data.features && res.data.features.length > 0) {
+                const quake = res.data.features[0].properties;
                 const quakeTime = new Date(quake.time).toLocaleString("en-NZ", {
                     timeZone: "Pacific/Auckland",
                     dateStyle: "long",
@@ -62,11 +58,11 @@ export default class LatestEarthquakeCommand implements Command {
                     content: "No earthquakes over 3 MMI have been recorded recently.",
                 });
             }
-        } catch (error) {
-            console.error("Error fetchiing earthquake data:", error);
+        }).catch(async (err) => {
+            console.error("Error fetchiing earthquake data:", err);
             await interaction.editReply({
                 content: "An error occurred while fetching earthquake data. Please try again later.",
             });
-        }
+        });
     }
 }
