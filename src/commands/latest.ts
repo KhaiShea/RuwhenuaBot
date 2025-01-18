@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import Discord from "discord.js";
+import axios from "axios";
 import { Command } from "../../@types";
 
 export default class LatestEarthquakeCommand implements Command {
@@ -30,7 +31,43 @@ export default class LatestEarthquakeCommand implements Command {
         Provides an emphemeral response linking user to the Aroha terms of use.
     */
     async execute(interaction: Discord.ChatInputCommandInteraction): Promise<any> {
-        // do stuff here
+        // Defer the reply to allow time for the API call
+        await interaction.deferReply();
 
+        const apiUrl = "https://api.geonet.org.nz/quake?MMI=3";
+
+        try {
+            const response = await axios.get(apiUrl, {
+                headers: { Accept: "application/vnd.geo+json;version=2" },
+            });
+
+            const data = response.data;
+
+            if (data.features && data.features.length > 0) {
+                const quake = data.features[0].properties;
+                const quakeTime = new Date(quake.time).toLocaleString("en-NZ", {
+                    timeZone: "Pacific/Auckland",
+                    dateStyle: "long",
+                    timeStyle: "short",
+                });
+
+                await interaction.editReply({
+                    content: `**Last Earthquake Over 3 MMI**\n\n` +
+                        `**Time:** ${quakeTime}\n` +
+                        `**Magnitude:** ${quake.magnitude}\n` +
+                        `**Locality:** ${quake.locality}\n` +
+                        `**MMI:** ${quake.mmi}\n`,
+                });
+            } else {
+                await interaction.editReply({
+                    content: "No earthquakes over 3 MMI have been recorded recently.",
+                });
+            }
+        } catch (error) {
+            console.error("Error fetchiing earthquake data:", error);
+            await interaction.editReply({
+                content: "An error occurred while fetching earthquake data. Please try again later.",
+            });
+        }
     }
 }
