@@ -25,6 +25,7 @@ export default class LatestEarthquakeCommand implements Command {
     slashCommand = new SlashCommandBuilder()
         .setName(this.name)
         .setDescription(this.description);
+    apiUrl = "https://api.geonet.org.nz/quake?MMI=3";
 
     /*
         Execute is called when the interaction is used on Discord.
@@ -33,9 +34,7 @@ export default class LatestEarthquakeCommand implements Command {
         // Defer the reply to allow time for the API call
         await interaction.deferReply();
 
-        const apiUrl = "https://api.geonet.org.nz/quake?MMI=3";
-
-        await axios.get(apiUrl, {
+        await axios.get(this.apiUrl, {
             headers: { Accept: "application/vnd.geo+json;version=2" },
         }).then(async (res) => {
             // Returns reply stating that no earthquakes over 3 MMI have been recorded recently if that is the case
