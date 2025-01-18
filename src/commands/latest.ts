@@ -39,7 +39,7 @@ export default class LatestEarthquakeCommand implements Command {
             headers: { Accept: "application/vnd.geo+json;version=2" },
         }).then(async (res) => {
             // Returns reply stating that no earthquakes over 3 MMI have been recorded recently if that is the case
-            if (res.data.features && res.data.features.length > 0) return await interaction.editReply({
+            if (!res.data.features || res.data.features.length < 1) return await interaction.editReply({
                 content: "No earthquakes over 3 MMI have been recorded recently.",
             });
 
