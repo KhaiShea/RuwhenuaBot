@@ -15,7 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js";
 import axios from "axios";
 import { Command } from "../../@types";
 
@@ -39,7 +39,7 @@ export default class LatestEarthquakeCommand implements Command {
             headers: { Accept: "application/vnd.geo+json;version=2" },
         }).then(async (res) => {
             // Returns reply stating that no earthquakes over 3 MMI have been recorded recently if that is the case
-            if (res.data.features && res.data.features.length > 0) return await interaction.editReply({
+            if (!res.data.features && res.data.features.length < 1) return await interaction.editReply({
                 content: "No earthquakes over 3 MMI have been recorded recently.",
             });
 
@@ -51,15 +51,16 @@ export default class LatestEarthquakeCommand implements Command {
                 timeStyle: "short",
             });
 
-            // Determine the intensity color
-            const intensityColors: Record<number, string> = {
+            // Determine the intensity colour
+            const intensityColours: Record<number, ColorResolvable> = {
                 1: "#00ff00", // Weak
                 2: "#ffff00", // Light
                 3: "#ffa500", // Moderate
                 4: "#ff4500", // Strong
                 5: "#ff0000"  // Severe
             };
-            const color = intensityColors[quake.mmi] || "#000000"; // Default to black if MMI is undefined
+
+            const colour = intensityColours[quake.mmi] || "#000000"; // Default to black if MMI is undefined
 
             // Generate the thumbnail URL
             const coordinates = quake.locality.replace(/\s+/g, "").toLowerCase();
@@ -80,7 +81,7 @@ export default class LatestEarthquakeCommand implements Command {
                     { name: "Depth", value: quake.depth ? `${quake.depth} km` : "Unknown", inline: false }
                 )
                 .setThumbnail(thumbnail)
-                .setColor(color)
+                .setColor(colour)
                 .setFooter({ text: "Felt it? Report it!" })
                 .setTimestamp();
 
