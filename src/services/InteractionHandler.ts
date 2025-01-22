@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { ChatInputCommandInteraction } from "discord.js";
-import { Command } from "../../@types";
+import { Command } from "../../@types/command";
 import LatestEarthquakeCommand from "../commands/LatestEarthquakeCommand";
 
 export default class InteractionHandler {

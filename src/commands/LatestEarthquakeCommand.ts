@@ -17,8 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js";
 import axios from "axios";
-import { Command } from "../../@types";
+import { Command } from "../../@types/command";
 import EmbedUtils from "../utils/EmbedUtils";
+import { EarthquakeTypeEmbedString } from "../../@types/embed";
 
 export default class LatestEarthquakeCommand implements Command {
     name = "latest";
@@ -51,7 +52,7 @@ export default class LatestEarthquakeCommand implements Command {
             const coordinates = res.data.features[0].geometry.coordinates;
 
             // Generate the embed using EmbedUtils
-            const embed = EmbedUtils.createQuakeEmbed(quake, coordinates);
+            const embed = EmbedUtils.createQuakeEmbed(quake, coordinates, EarthquakeTypeEmbedString.LATEST);
 
             // Reply with the embed
             await interaction.editReply({ embeds: [embed] });

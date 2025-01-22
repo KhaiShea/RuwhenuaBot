@@ -19,6 +19,7 @@ import { Client, TextChannel } from "discord.js";
 import axios from "axios";
 import EmbedUtils from "../utils/EmbedUtils";
 import settings from "../../settings.json";
+import { EarthquakeTypeEmbedString } from "../../@types/embed";
 
 export default class EarthquakeMonitor {
     private client: Client;
@@ -57,7 +58,7 @@ export default class EarthquakeMonitor {
 
         if (!alertChannel) return console.error("Alert channel not found.");
 
-        const quakeEmbed = EmbedUtils.createQuakeEmbed(quakeData.properties, quakeData.geometry);
+        const quakeEmbed = EmbedUtils.createQuakeEmbed(quakeData.properties, quakeData.geometry, EarthquakeTypeEmbedString.NEW);
         alertChannel.send({ content: "@everyone A new rūwhenua was detected!", embeds: [ quakeEmbed ] });
     }
 }

@@ -16,10 +16,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { ColorResolvable, EmbedBuilder } from "discord.js";
+import { EarthquakeTypeEmbedString } from "../../@types/embed";
 
 export default class EmbedUtils {
     // Create an embed for the latest earthquake.
-    static createQuakeEmbed(properties: any, geometry: any) {
+    static createQuakeEmbed(properties: any, geometry: any, earthquakeType: EarthquakeTypeEmbedString) {
         const quakeTime = new Date(properties.time).toLocaleString("en-NZ", {
             timeZone: "Pacific/Auckland",
             dateStyle: "long",
@@ -45,7 +46,7 @@ export default class EmbedUtils {
                 name: "GeoNet",
                 iconURL: "https://play-lh.googleusercontent.com/3yZMFN9072EDfKmoUkKJNgyHfIIciupUQPNGvPISXlIrrrRZ3s8cem8KCdP8upuFPZ0",
             })
-            .setTitle("A rūwhenua was detected!")
+            .setTitle(earthquakeType)
             .addFields(
                 { name: "Time", value: quakeTime, inline: false },
                 { name: "Location", value: properties.locality, inline: false },
