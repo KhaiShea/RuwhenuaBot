@@ -17,8 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { ChatInputCommandInteraction, Client, Events, GatewayIntentBits, REST, Routes, Snowflake } from "discord.js";
 import settings from "../settings.json";
-import InteractionHandler from "./interactionHandler";
-import EarthquakeMonitor from "./earthquakeMonitor";
+import InteractionHandler from "./services/InteractionHandler";
+import EarthquakeMonitor from "./services/EarthquakeMonitor";
 
 class RūwhenuaBot {
     private client: Client;

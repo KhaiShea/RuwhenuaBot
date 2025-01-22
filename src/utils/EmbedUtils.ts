@@ -17,7 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { ColorResolvable, EmbedBuilder } from "discord.js";
 
-class EmbedUtils {
+export default class EmbedUtils {
+    // Create an embed for the latest earthquake.
     static createQuakeEmbed(properties: any, geometry: any) {
         const quakeTime = new Date(properties.time).toLocaleString("en-NZ", {
             timeZone: "Pacific/Auckland",
@@ -44,7 +45,7 @@ class EmbedUtils {
                 name: "GeoNet",
                 iconURL: "https://play-lh.googleusercontent.com/3yZMFN9072EDfKmoUkKJNgyHfIIciupUQPNGvPISXlIrrrRZ3s8cem8KCdP8upuFPZ0",
             })
-            .setTitle("A Rūwhenua was detected!")
+            .setTitle("A rūwhenua was detected!")
             .addFields(
                 { name: "Time", value: quakeTime, inline: false },
                 { name: "Location", value: properties.locality, inline: false },
@@ -58,5 +59,3 @@ class EmbedUtils {
             .setTimestamp();
     }
 }
-
-export default EmbedUtils;

@@ -17,10 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Client, TextChannel } from "discord.js";
 import axios from "axios";
-import EmbedUtils from "./embedUtils";
-import settings from "../settings.json";
+import EmbedUtils from "../utils/EmbedUtils";
+import settings from "../../settings.json";
 
-class EarthquakeMonitor {
+export default class EarthquakeMonitor {
     private client: Client;
     private lastEarthquakeId: string | null = null;
 
@@ -32,36 +32,32 @@ class EarthquakeMonitor {
         setInterval(() => this.checkForEarthquakes(), 30000); // Poll every 30 seconds
     }
 
+    // Check for earthquakes with a Modified Mercalli Intensity of 3 or higher
     private async checkForEarthquakes() {
-        try {
-            const response = await axios.get("https://api.geonet.org.nz/quake?MMI=3", {
-                headers: { Accept: "application/vnd.geo+json;version=2" },
-            });
+        await axios.get("https://api.geonet.org.nz/quake?MMI=3", {
+            headers: { Accept: "application/vnd.geo+json;version=2" },
+        }).then((res => {
+            if (!res.data.features || res.data.features.length < 1) return;
 
-            if (!response.data.features || response.data.features.length < 1) return;
-
-            const latestQuake = response.data.features[0];
+            const latestQuake = res.data.features[0];
 
             if (this.lastEarthquakeId !== latestQuake.id) {
                 this.lastEarthquakeId = latestQuake.id;
                 this.alertEarthquake(latestQuake);
             }
-        } catch (error) {
-            console.error("Error fetching earthquake data:", error);
-        }
+
+        })).catch((err) => {
+            console.error("Error fetching earthquake data: " + err);
+        });
     }
 
+    // Alert the alert channel with the earthquake data.
     private async alertEarthquake(quakeData: any) {
-        const alertChannel = (await this.client.channels.fetch(settings.alertChannelId)) as TextChannel;
+        const alertChannel = (await this.client.channels.fetch(settings.alertChannelID)) as TextChannel;
 
-        if (!alertChannel) {
-            console.error("Alert channel not found.");
-            return;
-        }
+        if (!alertChannel) return console.error("Alert channel not found.");
 
         const quakeEmbed = EmbedUtils.createQuakeEmbed(quakeData.properties, quakeData.geometry);
-        alertChannel.send({ content: "@everyone A new earthquake was detected!", embeds: [quakeEmbed] });
+        alertChannel.send({ content: "@everyone A new rūwhenua was detected!", embeds: [ quakeEmbed ] });
     }
 }
-
-export default EarthquakeMonitor;

@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js";
 import axios from "axios";
 import { Command } from "../../@types";
-import EmbedUtils from "../embedUtils";
+import EmbedUtils from "../utils/EmbedUtils";
 
 export default class LatestEarthquakeCommand implements Command {
     name = "latest";
@@ -57,7 +57,7 @@ export default class LatestEarthquakeCommand implements Command {
             await interaction.editReply({ embeds: [embed] });
         }).catch(async (err) => {
             // Log and reply in case of an error fetching data
-            console.error("Error fetching earthquake data:", err);
+            console.error("Error fetching earthquake data: " + err);
             await interaction.editReply({
                 content: "An error occurred while fetching earthquake data. Please try again later.",
             });
