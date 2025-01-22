@@ -63,7 +63,7 @@ export default class LatestEarthquakeCommand implements Command {
             const colour = intensityColours[quake.mmi] || "#000000"; // Default to black if MMI is undefined
 
             // Generate the thumbnail URL
-            const coordinates = quake.locality.replace(/\s+/g, "").toLowerCase();
+            const coordinates = Math.round(res.data.features[0].geometry.coordinates[0]) + "E" + Math.abs(Math.round(res.data.features[0].geometry.coordinates[1])) + "S";
             const thumbnail = `https://static.geonet.org.nz/maps/4/quake/xxxhdpi/${coordinates}-${quake.mmi < 3 ? "weak" : quake.mmi < 5 ? "moderate" : "strong"}.png`;
 
             // Create an embed for the earthquake details
@@ -77,8 +77,8 @@ export default class LatestEarthquakeCommand implements Command {
                     { name: "Time", value: quakeTime, inline: false },
                     { name: "Location", value: quake.locality, inline: false },
                     { name: "Shaking", value: quake.mmi.toString(), inline: false },
-                    { name: "Magnitude", value: quake.magnitude.toString(), inline: false },
-                    { name: "Depth", value: quake.depth ? `${quake.depth} km` : "Unknown", inline: false }
+                    { name: "Magnitude", value: (quake.magnitude.toFixed(1)).toString(), inline: false },
+                    { name: "Depth", value: quake.depth ? `${quake.depth.toFixed(2)} km` : "Unknown", inline: false }
                 )
                 .setThumbnail(thumbnail)
                 .setColor(colour)
