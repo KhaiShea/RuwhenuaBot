@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js";
 import axios from "axios";
 import { Command } from "../../@types";
+import EmbedUtils from "../embedUtils";
 
 export default class LatestEarthquakeCommand implements Command {
     name = "latest";
@@ -39,51 +40,18 @@ export default class LatestEarthquakeCommand implements Command {
             headers: { Accept: "application/vnd.geo+json;version=2" },
         }).then(async (res) => {
             // Returns reply stating that no earthquakes over 3 MMI have been recorded recently if that is the case
-            if (!res.data.features && res.data.features.length < 1) return await interaction.editReply({
-                content: "No earthquakes over 3 MMI have been recorded recently.",
-            });
+            if (!res.data.features || res.data.features.length < 1) {
+                return await interaction.editReply({
+                    content: "No earthquakes over 3 MMI have been recorded recently.",
+                });
+            }
 
             // Extract the latest earthquake data
             const quake = res.data.features[0].properties;
-            const quakeTime = new Date(quake.time).toLocaleString("en-NZ", {
-                timeZone: "Pacific/Auckland",
-                dateStyle: "long",
-                timeStyle: "short",
-            });
+            const coordinates = res.data.features[0].geometry.coordinates;
 
-            // Determine the intensity colour
-            const intensityColours: Record<number, ColorResolvable> = {
-                1: "#00ff00", // Weak
-                2: "#ffff00", // Light
-                3: "#ffa500", // Moderate
-                4: "#ff4500", // Strong
-                5: "#ff0000"  // Severe
-            };
-
-            const colour = intensityColours[quake.mmi] || "#000000"; // Default to black if MMI is undefined
-
-            // Generate the thumbnail URL
-            const coordinates = Math.round(res.data.features[0].geometry.coordinates[0]) + "E" + Math.abs(Math.round(res.data.features[0].geometry.coordinates[1])) + "S";
-            const thumbnail = `https://static.geonet.org.nz/maps/4/quake/xxxhdpi/${coordinates}-${quake.mmi < 3 ? "weak" : quake.mmi < 5 ? "moderate" : "strong"}.png`;
-
-            // Create an embed for the earthquake details
-            const embed = new EmbedBuilder()
-                .setAuthor({
-                    name: "GeoNet",
-                    iconURL: "https://play-lh.googleusercontent.com/3yZMFN9072EDfKmoUkKJNgyHfIIciupUQPNGvPISXlIrrrRZ3s8cem8KCdP8upuFPZ0",
-                })
-                .setTitle("A Rūwhenua was detected!")
-                .addFields(
-                    { name: "Time", value: quakeTime, inline: false },
-                    { name: "Location", value: quake.locality, inline: false },
-                    { name: "Shaking", value: quake.mmi.toString(), inline: false },
-                    { name: "Magnitude", value: (quake.magnitude.toFixed(1)).toString(), inline: false },
-                    { name: "Depth", value: quake.depth ? `${quake.depth.toFixed(2)} km` : "Unknown", inline: false }
-                )
-                .setThumbnail(thumbnail)
-                .setColor(colour)
-                .setFooter({ text: "Felt it? Report it!" })
-                .setTimestamp();
+            // Generate the embed using EmbedUtils
+            const embed = EmbedUtils.createQuakeEmbed(quake, coordinates);
 
             // Reply with the embed
             await interaction.editReply({ embeds: [embed] });

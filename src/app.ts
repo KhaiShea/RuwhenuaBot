@@ -18,11 +18,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { ChatInputCommandInteraction, Client, Events, GatewayIntentBits, REST, Routes, Snowflake } from "discord.js";
 import settings from "../settings.json";
 import InteractionHandler from "./interactionHandler";
+import EarthquakeMonitor from "./earthquakeMonitor";
 
 class RūwhenuaBot {
     private client: Client;
     private interactionHandler: InteractionHandler;
     private discordRestClient: REST;
+    private earthquakeMonitor: EarthquakeMonitor;
 
     constructor() {
         /*
@@ -36,6 +38,7 @@ class RūwhenuaBot {
 
         this.interactionHandler = new InteractionHandler();
         this.discordRestClient = new REST().setToken(settings.tokens.discord);
+        this.earthquakeMonitor = new EarthquakeMonitor(this.client);
     };
 
     start() {
