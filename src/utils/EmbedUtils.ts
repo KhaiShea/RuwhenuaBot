@@ -65,7 +65,6 @@ export default class EmbedUtils {
             )
             .setThumbnail(thumbnail)
             .setColor(colour)
-            .setFooter({ text: "Felt it? Report it!" })
-            .setTimestamp();
+            .setFooter({ text: "Felt it? Report it!" });
     }
 }
