@@ -46,7 +46,7 @@ class RūwhenuaBot {
             Start discord.js client function.
         */
 
-        this.client.login(settings.tokens.discord)
+        this.client.login(settings.secrets.discord)
             .then(() => {
                 this.addClientEventHandlers();
                 if (this.client.application?.id) this.registerSlashCommands(this.client.application.id);
