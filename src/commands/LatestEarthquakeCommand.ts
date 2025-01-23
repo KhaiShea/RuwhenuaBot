@@ -15,10 +15,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import axios from "axios";
 import { Command } from "../../@types/command";
 import EmbedUtils from "../utils/EmbedUtils";
+import ButtonUtils from "../utils/ButtonUtils";
 
 export default class LatestEarthquakeCommand implements Command {
     name = "latest";
@@ -52,9 +53,11 @@ export default class LatestEarthquakeCommand implements Command {
 
             // Generate the embed using EmbedUtils
             const embed = EmbedUtils.createQuakeEmbed(quake, coordinates, "latest");
+            const button = ButtonUtils.createQuakeEmbedButton(res.data.features[0].properties.publicID);
+            const components = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
             // Reply with the embed
-            await interaction.editReply({ embeds: [embed] });
+            await interaction.editReply({ embeds: [embed], components: [components] });
         }).catch(async (err) => {
             // Log and reply in case of an error fetching data
             console.error("Error fetching earthquake data: " + err);

@@ -15,10 +15,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Client, TextChannel } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, Client, TextChannel } from "discord.js";
 import axios from "axios";
 import EmbedUtils from "../utils/EmbedUtils";
 import settings from "../../settings.json";
+import ButtonUtils from "../utils/ButtonUtils";
 
 export default class EarthquakeMonitor {
     private client: Client;
@@ -57,7 +58,10 @@ export default class EarthquakeMonitor {
 
         if (!alertChannel) return console.error("Alert channel not found.");
 
-        const quakeEmbed = EmbedUtils.createQuakeEmbed(quakeData.properties, quakeData.geometry, "new");
-        alertChannel.send({ content: "@everyone A new rūwhenua was detected!", embeds: [ quakeEmbed ] });
+        const embed = EmbedUtils.createQuakeEmbed(quakeData.properties, quakeData.geometry, "new");
+        const button = ButtonUtils.createQuakeEmbedButton(quakeData.properties.publicID);
+        const components = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
+
+        alertChannel.send({ content: "@everyone A new rūwhenua was detected!", embeds: [ embed ], components: [ components ] });
     }
 }
