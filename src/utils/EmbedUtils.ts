@@ -16,11 +16,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { ColorResolvable, EmbedBuilder } from "discord.js";
-import { EarthquakeTypeEmbedString } from "../../@types/embed";
 
 export default class EmbedUtils {
     // Create an embed for the latest earthquake.
-    static createQuakeEmbed(properties: any, geometry: any, earthquakeType: EarthquakeTypeEmbedString) {
+    static createQuakeEmbed(properties: any, geometry: any, earthquakeType: "latest" | "new"): EmbedBuilder {
         const quakeTime = new Date(properties.time).toLocaleString("en-NZ", {
             timeZone: "Pacific/Auckland",
             dateStyle: "long",
@@ -41,12 +40,22 @@ export default class EmbedUtils {
         const coordinates = Math.round(geometry[0]) + "E" + Math.abs(Math.round(geometry[1])) + "S";
         const thumbnail = `https://static.geonet.org.nz/maps/4/quake/xxxhdpi/${coordinates}-${properties.mmi < 3 ? "weak" : properties.mmi < 5 ? "moderate" : "strong"}.png`;
 
+        let title;
+
+        if (earthquakeType === "latest") {
+            title = "ℹ️ Latest reported rūwhenua";
+        } else if (earthquakeType === "new") {
+            title = "⚠️ A rūwhenua was detected!";
+        } else {
+            title = "❓ Earthquake information";
+        }
+
         return new EmbedBuilder()
             .setAuthor({
                 name: "GeoNet",
                 iconURL: "https://play-lh.googleusercontent.com/3yZMFN9072EDfKmoUkKJNgyHfIIciupUQPNGvPISXlIrrrRZ3s8cem8KCdP8upuFPZ0",
             })
-            .setTitle(earthquakeType)
+            .setTitle(title)
             .addFields(
                 { name: "Time", value: quakeTime, inline: false },
                 { name: "Location", value: properties.locality, inline: false },
