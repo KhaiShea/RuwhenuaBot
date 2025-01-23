@@ -59,7 +59,7 @@ export default class EarthquakeMonitor {
         if (!alertChannel) return console.error("Alert channel not found.");
 
         const embed = EmbedUtils.createQuakeEmbed(quakeData.properties, quakeData.geometry, "new");
-        const button = ButtonUtils.createQuakeEmbedButton(quakeData.properties.publicID);
+        const button = ButtonUtils.createNewQuakeEmbedButton(quakeData.properties.publicID);
         const components = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
         alertChannel.send({ content: "@everyone A new rūwhenua was detected!", embeds: [ embed ], components: [ components ] });

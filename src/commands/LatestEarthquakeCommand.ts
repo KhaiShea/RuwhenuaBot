@@ -53,7 +53,7 @@ export default class LatestEarthquakeCommand implements Command {
 
             // Generate the embed using EmbedUtils
             const embed = EmbedUtils.createQuakeEmbed(quake, coordinates, "latest");
-            const button = ButtonUtils.createQuakeEmbedButton(res.data.features[0].properties.publicID);
+            const button = ButtonUtils.createLatestQuakeEmbedButton(res.data.features[0].properties.publicID);
             const components = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
             // Reply with the embed
