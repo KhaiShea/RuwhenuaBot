@@ -1,7 +1,6 @@
 {
-    "tokens": {
-        "discord": "",
-        "geonet": ""
+    "secrets": {
+        "discord": ""
     },
     "alertChannelID": ""
 }
